@@ -2,7 +2,7 @@
 
 ### Prometheus
 
-Default access URL:
+Access Prometheus UI:
 
 ```
 http://localhost:9090
@@ -10,24 +10,24 @@ http://localhost:9090
 
 ### Grafana
 
-Grafana is a visualization tool that connects to Prometheus and displays metrics in the form of dashboards.
-
-Default access URL:
+Access Grafana UI:
 
 ```
 http://localhost:3000
 ```
 
-Default login credentials:
+Default credentials:
 
 ```
 username: admin
 password: admin
 ```
 
-## Docker Compose Configuration
+---
 
-The services are started using the following `docker-compose.yml`.
+# Docker Compose Configuration
+
+Prometheus and Grafana are started using the following **docker-compose.yml**.
 
 ```yaml
 version: "3"
@@ -49,9 +49,11 @@ services:
       - "3000:3000"
 ```
 
-Prometheus loads its configuration from the `prometheus.yml` file mounted into the container.
+Prometheus loads its configuration from the mounted **prometheus.yml** file.
 
-## Running the Stack
+---
+
+# Running the Monitoring Stack
 
 Start the services using:
 
@@ -59,36 +61,33 @@ Start the services using:
 docker compose up -d
 ```
 
-This will launch both containers in the background.
-
-Verify running containers:
+Check running containers:
 
 ```
 docker ps
 ```
 
-## Accessing the Services
+---
 
-Prometheus UI:
+# Accessing the Services
+
+Prometheus:
 
 ```
 http://localhost:9090
 ```
 
-Grafana UI:
+Grafana:
 
 ```
 http://localhost:3000
 ```
 
-## Connecting Grafana to Prometheus
+---
+
+# Connecting Grafana to Prometheus
 
 To visualize metrics in Grafana:
-
-1. Open Grafana in the browser.
-2. Navigate to **Connections → Data Sources**.
-3. Click **Add data source**.
-4. Select **Prometheus**.
 
 Set the Prometheus URL:
 
@@ -96,6 +95,36 @@ Set the Prometheus URL:
 http://prometheus:9090
 ```
 
-Click **Save & Test**.
+Click **Save & Test** to verify the connection.
 
-Grafana will now be connected to Prometheus and ready to create or import dashboards.
+---
+
+# Spring Boot Configuration for Metrics
+
+
+```
+management.endpoints.web.exposure.include=*
+management.endpoint.prometheus.enabled=true
+management.metrics.export.prometheus.enabled=true
+```
+
+These configurations enable the **Prometheus metrics endpoint**.
+
+The metrics will be available at:
+
+```
+/actuator/prometheus
+```
+
+Example endpoint:
+
+```
+http://localhost:8080/actuator/prometheus
+```
+
+Prometheus scrapes this endpoint periodically to collect application metrics.
+
+---
+
+
+Prometheus scrapes metrics from the application endpoint and Grafana displays them through dashboards.
